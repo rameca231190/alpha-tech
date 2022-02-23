@@ -47,7 +47,7 @@ helm repo update
 
 
 #---> Install loki on monitoring
-helm upgrade --install loki -n monitoring grafana/loki
+helm upgrade --install loki -n monitoring grafana/loki-stack
 if [ $? -ne 0 ];
 then
   echo "Error installing loki"
