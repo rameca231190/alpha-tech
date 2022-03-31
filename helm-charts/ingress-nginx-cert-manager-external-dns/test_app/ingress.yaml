@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - "kuard.dev.versoview.us"
-      secretName: kuard-secret-tls
+      - "prod-test-kuard.prod.versoview.us"
+      secretName: kuard-test-secret-tls
   rules:
-  - host: kuard.dev.versoview.us
+  - host: prod-test-kuard.prod.versoview.us
     http:
       paths:
       - path: /

@@ -8,7 +8,7 @@ pipeline {
        stage('Docker build') {
             agent any
             environment {
-                    IMAGE_TAG = "eks_dev_${env.BUILD_ID}"
+                    IMAGE_TAG = "base_${env.BUILD_ID}"
                     registry = 'https://registry.hub.docker.com'
                     repository = 'versoview/base-image'
             }
@@ -22,7 +22,7 @@ pipeline {
        stage('Docker push') {
             agent any
             environment {
-                    IMAGE_TAG = "eks_dev_${env.BUILD_ID}"
+                    IMAGE_TAG = "base_${env.BUILD_ID}"
                     repository = 'versoview/base-image'
             }
             steps {
@@ -35,7 +35,7 @@ pipeline {
        stage('Clean up after completion') {
             agent any
             environment {
-                    IMAGE_TAG = "eks_dev_${env.BUILD_ID}"
+                    IMAGE_TAG = "base_${env.BUILD_ID}"
                     repository = 'versoview/base-image'
             }
             steps {

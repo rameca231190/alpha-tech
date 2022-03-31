@@ -22,8 +22,6 @@ then
   exit 1;
 fi
 
-
-
 if [ $ENVIRONMENT == "dr" ];
 then
   echo "Restoring backup to DR cluster"
@@ -35,4 +33,3 @@ then
   echo "Error restoring backup"
   exit 1;
 fi
-

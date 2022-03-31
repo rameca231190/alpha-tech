@@ -29,9 +29,9 @@ pipeline {
                     sh "echo ${KUBECONFIG} > ~/.kube/config"
                     sh "kubectl get nodes"
                     sh "ls grafana-prometheus"
-                    sh "chmod 755 grafana-prometheus/setup.sh"
-                    // Trigger setup.sh script to install control plane on k8s
-                    sh "./grafana-prometheus/setup.sh ${ENVIRONMENT} ${aws_region} ${aws_access_key_id} ${aws_secret_access_key}"
+                    sh "chmod 755 grafana-prometheus/script_monitoring.sh"
+                    // Trigger script_monitoring script to install control plane on k8s
+                    sh "./grafana-prometheus/script_monitoring.sh ${ENVIRONMENT} ${aws_region} ${aws_access_key_id} ${aws_secret_access_key}"
                 }
                 }
             }

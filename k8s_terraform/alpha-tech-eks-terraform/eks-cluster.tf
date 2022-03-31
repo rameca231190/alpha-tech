@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "cluster_eks" {
     # If the expression in the following list itself returns a list, remove the
     # brackets to avoid interpretation as a list of lists. If the expression
     # returns a single list item then leave it as-is and remove this TODO comment.
-    subnet_ids = var.public_subnets
+    subnet_ids = var.private_subnets
   }
 
   depends_on = [

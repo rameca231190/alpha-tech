@@ -43,3 +43,33 @@ Node all memory cpu:      1860
 Cluster cpu and memory:   315
 Network:                  6663
 
+
+# SMTP server config
+k get cm thanos-grafana -n monitoring
+
+ grafana.ini: |
+    [analytics]
+    check_for_updates = true
+    [grafana_net]
+    url = https://grafana.net
+    [log]
+    mode = console
+    [paths]
+    data = /var/lib/grafana/
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+    [smtp]
+    enabled = true
+    host = smtp.office365.com:587
+    user = versoview.user@alphait.us
+    password = Alph@704
+    skip_verify = true
+    from_address = versoview.user@alphait.us
+
+
+And then restart grafana.
+
+
+
+roman.pereverziev@alphait.us,shrey.upadhyay@alphait.us,manmohan.singh@alphait.us,mohammad.siddiq@alphait.us

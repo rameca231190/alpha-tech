@@ -3,8 +3,11 @@ import groovy.transform.Field
 import groovy.lang.Binding
 pipeline {
     agent any
+    parameters{
+        choice(name: 'ENVIRONMENT', choices: ["dev","qa","prod","tools"], description: 'Select the desire environment')
+    }
     stages {
-        stage('Set up') {
+        stage('Set up k8s-dashboard') {
             agent {
                 docker {
                     image 'versoview/base-image:base_helm_dev_2'
@@ -14,24 +17,23 @@ pipeline {
                 }
             }
             environment {
-                ENVIRONMENT = "qa"
+                ENVIRONMENT = "${params.ENVIRONMENT}"
                 aws_region = "ap-southeast-1"
                 aws_access_key_id = credentials('aws_access_key_id')
                 aws_secret_access_key = credentials('aws_secret_access_key')
             }
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/qa-master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
-                withCredentials([kubeconfigFile(credentialsId: 'qa_eks_kubeconfig', variable: 'KUBECONFIG')]) {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
+                withCredentials([kubeconfigFile(credentialsId: "${ENVIRONMENT}_eks_kubeconfig", variable: 'KUBECONFIG')]) {
                     sh "aws configure set aws_access_key_id ${aws_access_key_id}"
                     sh "aws configure set aws_secret_access_key ${aws_secret_access_key}"
                     sh "aws configure set default.region ${aws_region}"
                     sh "mkdir ~/.kube"
                     sh "echo ${KUBECONFIG} > ~/.kube/config"
                     sh "kubectl get nodes"
-                    sh "ls ingress-nginx-cert-manager-external-dns"
-                    sh "chmod 755 ingress-nginx-cert-manager-external-dns/setup.sh"
-                    // Trigger setup.sh script to install control plane on k8s
-                    sh "./ingress-nginx-cert-manager-external-dns/setup.sh ${ENVIRONMENT} ${aws_region} ${aws_access_key_id} ${aws_secret_access_key}"
+                    sh "chmod 755 ./grafana-prometheus/script_monitoring.sh"
+                    // Trigger script_k8s_dashboard.sh script to install k8s-dashboard
+                    sh "./grafana-prometheus/script_monitoring.sh ${ENVIRONMENT} ${aws_region} ${aws_access_key_id} ${aws_secret_access_key}"
                 }
                 }
             }

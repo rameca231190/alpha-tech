@@ -13,7 +13,7 @@ USERDATA
 }
 
 resource "aws_launch_configuration" "cluster_eks" {
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   iam_instance_profile = aws_iam_instance_profile.node.name
   image_id = var.image_id
   instance_type = "t3.medium"
@@ -27,10 +27,10 @@ resource "aws_launch_configuration" "cluster_eks" {
 }
 
 resource "aws_autoscaling_group" "cluster_eks" {
-  desired_capacity = 2
+  desired_capacity = 3
   launch_configuration = aws_launch_configuration.cluster_eks.id
-  max_size = 2
-  min_size = 1
+  max_size = 4
+  min_size = 2
   name = "terraform-eks-${var.env}"
   # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
   # force an interpolation expression to be interpreted as a list by wrapping it
@@ -40,7 +40,7 @@ resource "aws_autoscaling_group" "cluster_eks" {
   # If the expression in the following list itself returns a list, remove the
   # brackets to avoid interpretation as a list of lists. If the expression
   # returns a single list item then leave it as-is and remove this TODO comment.
-  vpc_zone_identifier = var.public_subnets
+  vpc_zone_identifier = var.private_subnets
 
   tag {
     key = "Name"

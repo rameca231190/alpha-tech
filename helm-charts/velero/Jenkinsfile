@@ -29,7 +29,7 @@ pipeline {
                 aws_secret_access_key = credentials('aws_secret_access_key')
             }
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/prod-master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
                 withCredentials([kubeconfigFile(credentialsId: "${ENVIRONMENT}_eks_kubeconfig", variable: 'KUBECONFIG')]) {
                     sh "aws configure set aws_access_key_id ${aws_access_key_id}"
                     sh "aws configure set aws_secret_access_key ${aws_secret_access_key}"
@@ -68,7 +68,7 @@ pipeline {
                 aws_secret_access_key = credentials('aws_secret_access_key')
             }
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/prod-master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GT_PAT', url: 'https://github.com/Alpha-TechUSA/helm-charts.git']]])
                 withCredentials([kubeconfigFile(credentialsId: "${ENVIRONMENT}_eks_kubeconfig", variable: 'KUBECONFIG')]) {
                     sh "aws configure set aws_access_key_id ${aws_access_key_id}"
                     sh "aws configure set aws_secret_access_key ${aws_secret_access_key}"

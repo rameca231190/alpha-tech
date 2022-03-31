@@ -498,14 +498,14 @@ alertmanager:
     ## Storage is the definition of how storage will be used by the Alertmanager instances.
     ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/user-guides/storage.md
     ##
-    storage: {}
-    # volumeClaimTemplate:
-    #   spec:
-    #     storageClassName: gluster
-    #     accessModes: ["ReadWriteOnce"]
-    #     resources:
-    #       requests:
-    #         storage: 50Gi
+    storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: gp2
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 50Gi
     #   selector: {}
 
 
@@ -645,6 +645,25 @@ alertmanager:
 grafana:
   enabled: true
   namespaceOverride: ""
+
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: gp2
+    accessModes:
+    - ReadWriteOnce
+    size: 10Gi
+    finalizers:
+    - kubernetes.io/pvc-protection
+
+  grafana.ini:
+    smtp:
+      enabled: true
+      host: "smtp.office365.com:587"
+      user: "versoview.user@alphait.us"
+      password: "Alph@704"
+      skip_verify: "true"
+      from_address: "versoview.user@alphait.us"
 
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##

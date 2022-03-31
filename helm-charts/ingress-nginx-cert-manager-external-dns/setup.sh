@@ -83,7 +83,7 @@ then
   echo "ClusterIssuer is already exist, skiping this step"
 else
   echo "ClusterIssuer does not exist, creating ..."
-  kubectl create -f ingress-nginx-cert-manager-external-dns/cluster_issuers/cluster_issuer_dev.yaml
+  kubectl create -f ingress-nginx-cert-manager-external-dns/cluster_issuers/cluster_issuer_$ENVIRONMENT.yaml
 fi
 
 

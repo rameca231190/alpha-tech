@@ -238,7 +238,6 @@ kubectl get nodes
 
 
 ## Save and Export kubeconfig to your own path
-export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
 
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config_alpha/config_dev 
 

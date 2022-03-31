@@ -230,7 +230,7 @@ alertmanager:
     ## Hosts must be provided if Ingress is enabled.
     ##
     hosts:
-    - alertmanager.qa.versoview.us
+    - alertmanager.prod.versoview.us
 
     ## Paths to use for ingress rules - one path should match the alertmanagerSpec.routePrefix
     ##
@@ -249,7 +249,7 @@ alertmanager:
     tls:
     - secretName: alertmanager-general-tls
       hosts:
-      - alertmanager.qa.versoview.us
+      - alertmanager.prod.versoview.us
 
   ## Configuration for Alertmanager secret
   ##
@@ -501,12 +501,12 @@ alertmanager:
     storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: gluster
+        storageClassName: gp2
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 50Gi
-      selector: {}
+    #   selector: {}
 
 
     ## The external URL the Alertmanager instances will be available under. This is necessary to generate correct URLs. This is necessary if Alertmanager is not served from root of a DNS name. string  false
@@ -705,7 +705,7 @@ grafana:
     #hosts:
     #- grafana.dev.versoview.us
     hosts:
-    - grafana.qa.versoview.us
+    - grafana.prod.versoview.us
 
     ## Path for grafana ingress
     path: /
@@ -716,7 +716,7 @@ grafana:
     tls:
     - secretName: grafana-general-tls
       hosts:
-      - grafana.qa.versoview.us
+      - grafana.prod.versoview.us
 
   sidecar:
     dashboards:
@@ -1955,13 +1955,13 @@ prometheus:
 
     ## Port to expose on each node
     ## Only used if service.type is 'NodePort'
-    ##
+    
     nodePort: 30901
 
     ## Hosts must be provided if Ingress is enabled.
     ##
     hosts:
-      - thanos-gateway.qa.versoview.us
+      - thanos-gateway.prod.versoview.us
 
     ## Paths to use for ingress rules
     ##
@@ -1980,7 +1980,7 @@ prometheus:
     tls:
     - secretName: thanos-gateway-tls
       hosts:
-      - thanos-gateway.qa.versoview.us
+      - thanos-gateway.prod.versoview.us
     #
 
   ## ExtraSecret can be used to store various data in an extra secret
@@ -2013,7 +2013,7 @@ prometheus:
     #hosts:
     #- prometheus.dev.versoview.us
     hosts:
-    - prometheus.qa.versoview.us
+    - prometheus.prod.versoview.us
 
     ## Paths to use for ingress rules - one path should match the prometheusSpec.routePrefix
     ##
@@ -2032,7 +2032,7 @@ prometheus:
     tls:
     - secretName: prometheus-general-tls
       hosts:
-      - prometheus.qa.versoview.us
+      - prometheus.prod.versoview.us
 
   ## Configuration for creating an Ingress that will map to each Prometheus replica service
   ## prometheus.servicePerReplica must be enabled

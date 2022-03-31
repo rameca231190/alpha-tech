@@ -7,7 +7,7 @@ ENVIRONMENT=$1
 aws_region=$2
 aws_access_key_id=$3
 aws_secret_access_key=$4
-EXCLUDE_NS="default,kube-system,kube-node-lease,kube-public,velero,cert-manager,external-dns,ingress-nginx"
+EXCLUDE_NS="default,kube-system,kube-node-lease,kube-public,velero,cert-manager,external-dns,ingress-nginx,monitoring,kubernetes-dashboard"
 
 echo "$ENVIRONMENT"
 echo "$aws_region"

@@ -12,11 +12,13 @@ variable "region" {
   type    = string
 }
 
-variable "public_subnets" {
+variable "private_subnets" {
   type    = list
 }
 
 variable "image_id" {
   type    = string
 }
+
+
 
