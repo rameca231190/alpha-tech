@@ -1,1 +1,1 @@
-query: "count(kubernetes.events{involvedObject.kind=StatefulSet, involvedObject.name=<STATEFULSET_NAME>}) by {reason} > 0 and count(kubernetes.events{involvedObject.kind=StatefulSet, involvedObject.name=<STATEFULSET_NAME>, reason='Deleted'}) by {reason} == 0"
+sum(last_5m):sum:events("statefulset:<statefulset_name>").rollup(sum, 300) by {statefulset_name} == 0
