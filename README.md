@@ -1,15 +1,1 @@
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
-This is learning session of github !
+query: "count(kubernetes.events{involvedObject.kind=StatefulSet, involvedObject.name=<STATEFULSET_NAME>}) by {reason} > 0 and count(kubernetes.events{involvedObject.kind=StatefulSet, involvedObject.name=<STATEFULSET_NAME>, reason='Deleted'}) by {reason} == 0"
