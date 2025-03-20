@@ -1,31 +1,43 @@
 locals {
-  node-userdata = <<USERDATA
-#!/bin/bash
-set -o xtrace
-/etc/eks/bootstrap.sh ${var.cluster-name} --apiserver-endpoint '${aws_eks_cluster.cluster_eks.endpoint}' --b64-cluster-ca '${aws_eks_cluster.cluster_eks.certificate_authority[0].data}'
-USERDATA
+  node-userdata = <<-USERDATA
+  #!/bin/bash
+  set -o xtrace
+  /etc/eks/bootstrap.sh ${var.cluster-name} --apiserver-endpoint '${aws_eks_cluster.cluster_eks.endpoint}' --b64-cluster-ca '${aws_eks_cluster.cluster_eks.certificate_authority[0].data}'
+  USERDATA
 }
 
-resource "aws_launch_configuration" "cluster-eks" {
-  associate_public_ip_address = false
-  iam_instance_profile        = aws_iam_instance_profile.node.name
-  image_id                    = var.image_id
-  instance_type               = "t3.medium"
-  name_prefix                 = "terraform-eks-${var.env}"
-  security_groups             = [aws_security_group.node.id]
-  user_data_base64            = base64encode(local.node-userdata)
+resource "aws_launch_template" "cluster-eks" {
+  name_prefix   = "terraform-eks-${var.env}"
+  image_id      = var.image_id
+  instance_type = "t3.medium"
 
-  lifecycle {
-    create_before_destroy = true
+  iam_instance_profile {
+    name = aws_iam_instance_profile.node.name
+  }
+
+  vpc_security_group_ids = [aws_security_group.node.id]
+
+  user_data = base64encode(local.node-userdata)
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "terraform-eks-${var.env}"
+    }
   }
 }
 
 resource "aws_autoscaling_group" "cluster_eks_as" {
   desired_capacity     = 3
-  launch_configuration = aws_launch_configuration.cluster-eks.id
   max_size            = 4
   min_size            = 2
   vpc_zone_identifier = var.private_subnets
+
+  launch_template {
+    id      = aws_launch_template.cluster-eks.id
+    version = "$Latest"
+  }
 
   tag {
     key                 = "Name"
@@ -39,5 +51,5 @@ resource "aws_autoscaling_group" "cluster_eks_as" {
     propagate_at_launch = true
   }
 
-  depends_on = [aws_launch_configuration.cluster-eks]
+  depends_on = [aws_launch_template.cluster-eks]
 }
