@@ -33,6 +33,12 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOn
   role = aws_iam_role.node.name
 }
 
+# 🚀 Missing Policy Added Below 🚀
+resource "aws_iam_role_policy_attachment" "node-AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.node.name
+}
+
 resource "aws_iam_instance_profile" "node" {
   name = "terraform-eks-${var.env}"
   role = aws_iam_role.node.name
