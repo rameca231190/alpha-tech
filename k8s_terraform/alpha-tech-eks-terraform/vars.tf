@@ -13,7 +13,7 @@ variable "region" {
 }
 
 variable "private_subnets" {
-  type    = list
+  type    = list(string)
 }
 
 variable "image_id" {

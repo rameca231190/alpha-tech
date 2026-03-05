@@ -7,7 +7,7 @@ pipeline {
         stage('Terraform init/plan/apply') {
             agent {
                 docker {
-                    image 'versoview/base-image:base_1'
+                    image 'versoview/base-image:eks-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'

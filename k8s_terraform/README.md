@@ -6,47 +6,37 @@ Dockerfile ---->  is used as a runtime for our terraform job, jenkins server wil
 Note: If you are changing terraform code you have to rebuil that image with Jenkinsfile.
 
 ```
-FROM alpine:3.10
-ENV TERRAFORM_VERSION=0.13.5
-ENV KUBECTL_VERSION=v1.18.2
-ENV HELM_VERSION=v3.2.4
+FROM alpine:3.19
+ENV TERRAFORM_VERSION=1.14.6
+ENV KUBECTL_VERSION=v1.35.1
+ENV HELM_VERSION=v4.1.1
 
 WORKDIR /app
 
 RUN apk --no-cache update \
   && apk upgrade \
-  && apk --no-cache add curl git wget unzip openssh jq bind-tools bash python \
-  && wget /app https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -O terraform.zip ; unzip /app/terraform.zip \
-  && chmod +x /app/terraform; mv /app/terraform /usr/local/bin/; rm /app/terraform.zip \
-  && wget --no-check-certificate -P /app https://get.helm.sh/helm-$HELM_VERSION-linux-386.tar.gz ; tar -xzvf /app/helm-$HELM_VERSION-linux-386.tar.gz \
-  && mv /app/linux-386/helm /usr/local/bin/helm; rm /app/helm-$HELM_VERSION-linux-386.tar.gz \
-  && curl -LO https://storage.googleapis.com/kubernetes-release/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl; chmod +x /app/kubectl; mv /app/kubectl /usr/local/bin/ \
-  && apk add --no-cache python3 py3-pip
+  && apk --no-cache add curl git wget unzip openssh jq bind-tools bash python3 py3-pip ca-certificates groff less \
+  && wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -O terraform.zip \
+  && unzip terraform.zip \
+  && chmod +x terraform \
+  && mv terraform /usr/local/bin/terraform \
+  && rm terraform.zip \
+  && wget "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" -O helm.tar.gz \
+  && tar -xzvf helm.tar.gz \
+  && mv linux-amd64/helm /usr/local/bin/helm \
+  && rm -rf linux-amd64 helm.tar.gz \
+  && curl -L -o kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+  && chmod +x kubectl \
+  && mv kubectl /usr/local/bin/kubectl \
+  && pip3 install --upgrade pip \
+  && pip3 install awscli
 
-
-RUN apk update && apk add \
-	ca-certificates \
-	groff \
-	less \
-	python \
-	py-pip \
-	&& rm -rf /var/cache/apk/* \
-  && pip install pip --upgrade \
-  && pip install awscli
-
-COPY alpha-tech-eks-terraform/heptio-authenticator-aws_0.3.0_linux_amd64 /usr/local/bin
 COPY alpha-tech-eks-terraform .
 ```
-Jenkinsfile ----->     Used to build base image for creating EKS cluster, whenever you rerun it dont forget to update base image inside <Jenkinsfile_tf_apply> and <Jenkinsfile_tf_destroy> on bellow line:
-
-```
-    docker {
-        image 'versoview/base-image:eks_dev_1'
-    }
-```
+Jenkinsfile ----->     Used to build base image for creating EKS cluster. It builds a tagged image and also maintains a rolling `eks-tools-latest` tag that is used by the Terraform pipelines.
 
 
-Jenkinsfile_tf_apply       ----> Used to create the actual cluster just import this file to jenkins pipeline.
+Jenkinsfile_tf_apply       ----> Used to create the actual cluster just import this file to jenkins pipeline. It uses the `versoview/base-image:eks-tools-latest` image built by the Docker `Jenkinsfile`.
 
 ```
 // a.groovy
@@ -105,7 +95,7 @@ pipeline {
 }
 ```
 
-Jenkinsfile_tf_destroy     ----> Used to destroy the cluster (be cearful with this pipeline).
+Jenkinsfile_tf_destroy     ----> Used to destroy the cluster (be cearful with this pipeline). It also uses the `versoview/base-image:eks-tools-latest` image built by the Docker `Jenkinsfile`.
 
 ```
 // a.groovy
@@ -169,16 +159,7 @@ image_id = "ami-02a3a200c350cb674"
 ```
 
 
-eks-workers.tf           -----> has worker nodes configuration as well as autoscalling group, so if you need to make a change to desired or min/max amout of workers update those details.
-
-```
-resource "aws_autoscaling_group" "cluster_eks" {
-  desired_capacity = 2
-  launch_configuration = aws_launch_configuration.cluster_eks.id
-  max_size = 2
-  min_size = 1
-}
-```
+eks-workers.tf           -----> has worker nodes configuration as well as autoscalling group, so if you need to make a change to desired or min/max amout of workers update those details. This configuration now uses a launch template and Auto Scaling Group that are compatible with modern EKS and Terraform 1.x.
 
 
 
