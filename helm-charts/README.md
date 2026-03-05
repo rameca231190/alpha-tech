@@ -1,5 +1,7 @@
 ### helm-charts
 
+Helm charts and Jenkins pipelines for ingress-nginx, cert-manager, external-dns, Grafana/Prometheus, Velero, and k8s-dashboard. Pipelines use the Docker image `versoview/base-image:helm-tools-latest` (build from `ingress-nginx-cert-manager-external-dns/Dockerfile` and tag as `helm-tools-latest`).
+
 This code creates the following set up.
 
 # Ingress-nginx

@@ -16,7 +16,7 @@ pipeline {
             }
             agent {
                 docker {
-                    image 'versoview/base-image:base_helm_dev_2'
+                    image 'versoview/base-image:helm-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'
@@ -37,9 +37,9 @@ pipeline {
                     sh "mkdir ~/.kube"
                     sh "echo ${KUBECONFIG} > ~/.kube/config"
                     sh "kubectl get nodes"
-                    sh "wget https://github.com/vmware-tanzu/velero/releases/download/v1.3.2/velero-v1.3.2-linux-amd64.tar.gz"
-                    sh "tar -xvf velero-v1.3.2-linux-amd64.tar.gz -C /tmp"
-                    sh "mv /tmp/velero-v1.3.2-linux-amd64/velero /usr/local/bin"
+                    sh "wget https://github.com/vmware-tanzu/velero/releases/download/v1.13.2/velero-v1.13.2-linux-amd64.tar.gz"
+                    sh "tar -xvf velero-v1.13.2-linux-amd64.tar.gz -C /tmp"
+                    sh "mv /tmp/velero-v1.13.2-linux-amd64/velero /usr/local/bin"
                     sh "velero version"
                     sh "chmod 755 velero/velero_set_up_prod.sh"
                     // Trigger setup.sh script to install control plane on k8s
@@ -55,7 +55,7 @@ pipeline {
             }
             agent {
                 docker {
-                    image 'versoview/base-image:base_helm_dev_2'
+                    image 'versoview/base-image:helm-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'
@@ -76,9 +76,9 @@ pipeline {
                     sh "mkdir ~/.kube"
                     sh "echo ${KUBECONFIG} > ~/.kube/config"
                     sh "kubectl get nodes"
-                    sh "wget https://github.com/vmware-tanzu/velero/releases/download/v1.3.2/velero-v1.3.2-linux-amd64.tar.gz"
-                    sh "tar -xvf velero-v1.3.2-linux-amd64.tar.gz -C /tmp"
-                    sh "mv /tmp/velero-v1.3.2-linux-amd64/velero /usr/local/bin"
+                    sh "wget https://github.com/vmware-tanzu/velero/releases/download/v1.13.2/velero-v1.13.2-linux-amd64.tar.gz"
+                    sh "tar -xvf velero-v1.13.2-linux-amd64.tar.gz -C /tmp"
+                    sh "mv /tmp/velero-v1.13.2-linux-amd64/velero /usr/local/bin"
                     sh "velero version"
                     sh "chmod 755 velero/velero_set_up_prod.sh"
                     // Trigger setup.sh script to install control plane on k8s

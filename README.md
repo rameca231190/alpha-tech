@@ -1,3 +1,11 @@
+# alpha-tech
+
+Infrastructure and deployment: Terraform (EKS, VPC), Helm charts (ingress, cert-manager, Grafana/Prometheus, Velero, k8s-dashboard), and Jenkins pipelines.
+
+---
+
+## Datadog monitor (StatefulSet metric)
+
 sum:events("statefulset:<statefulset_name>").rollup(sum, 300)
 Replace <statefulset_name> with the actual name of your StatefulSet.
 

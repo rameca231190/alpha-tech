@@ -20,8 +20,8 @@ pipeline {
                 script {
                     sh '''
                     cd alpha_tech_vpc_terraform
-                    terraform init
-                    terraform plan --var-file=values.tfvars 
+                    terraform init -reconfigure
+                    terraform plan -destroy --var-file=values.tfvars 
                     '''
                 }
             }

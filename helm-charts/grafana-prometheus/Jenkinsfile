@@ -10,7 +10,7 @@ pipeline {
         stage('Set up k8s-dashboard') {
             agent {
                 docker {
-                    image 'versoview/base-image:base_helm_dev_2'
+                    image 'versoview/base-image:helm-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'

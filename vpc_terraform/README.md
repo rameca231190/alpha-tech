@@ -32,20 +32,16 @@ terraform apply --var-file=values.tfvars
 
 # Jenkins groovy script and its purpose.
 
-Jenkinsfile                --->  Used to create base image with leyers nececary to it.
+Jenkinsfile                --->  Used to create base image with layers necessary for VPC Terraform. Builds `vpc-tools-<BUILD_ID>` and pushes `vpc-tools-latest` for use by Terraform pipelines.
 
 ```
 #!/usr/bin/env groovy
-import groovy.transform.Field
-import groovy.lang.Binding
-
 pipeline {
     agent any
     stages {
        stage('Docker build') {
-            agent any
             environment {
-                    IMAGE_TAG = "${env.BUILD_ID}"
+                    IMAGE_TAG = "vpc-tools-${env.BUILD_ID}"
                     registry = 'https://registry.hub.docker.com'
                     repository = 'versoview/base-image'
             }
@@ -53,30 +49,32 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_generic', usernameVariable: 'username', passwordVariable: 'password')]){
                     sh 'docker login -u ${username} -p ${password} ${registry}'
                     sh 'docker build . -t ${repository}:${IMAGE_TAG}'
+                    sh 'docker tag ${repository}:${IMAGE_TAG} ${repository}:vpc-tools-latest'
                     }
             }
        }
        stage('Docker push') {
-            agent any
             environment {
-                    IMAGE_TAG = "${env.BUILD_ID}"
+                    IMAGE_TAG = "vpc-tools-${env.BUILD_ID}"
+                    registry = 'https://registry.hub.docker.com'
                     repository = 'versoview/base-image'
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_generic', usernameVariable: 'username', passwordVariable: 'password')]){
                     sh 'docker login -u ${username} -p ${password} ${registry}'
                     sh 'docker push ${repository}:${IMAGE_TAG}'
+                    sh 'docker push ${repository}:vpc-tools-latest'
                 }
             }
        }
        stage('Clean up after completion') {
-            agent any
             environment {
-                    IMAGE_TAG = "${env.BUILD_ID}"
+                    IMAGE_TAG = "vpc-tools-${env.BUILD_ID}"
                     repository = 'versoview/base-image'
             }
             steps {
-                    sh "docker rmi ${repository}:${IMAGE_TAG}"
+                    sh "docker rmi ${repository}:${IMAGE_TAG} || true"
+                    sh "docker rmi ${repository}:vpc-tools-latest || true"
             }
        }
     }

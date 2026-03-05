@@ -15,7 +15,7 @@ pipeline {
             }
             agent {
                 docker {
-                    image 'versoview/base-image:base_helm_dev_2'
+                    image 'versoview/base-image:helm-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'
@@ -51,7 +51,7 @@ pipeline {
             }
             agent {
                 docker {
-                    image 'versoview/base-image:base_helm_dev_2'
+                    image 'versoview/base-image:helm-tools-latest'
                     registryUrl 'https://registry.hub.docker.com'
                     args '-u root:root'
                     registryCredentialsId 'dockerhub_generic'
@@ -59,7 +59,7 @@ pipeline {
             }
             environment {
                 ENVIRONMENT = "${params.ENVIRONMENT}"
-                aws_region = "ap-sout-1"
+                aws_region = "ap-south-1"
                 aws_access_key_id = credentials('aws_access_key_id')
                 aws_secret_access_key = credentials('aws_secret_access_key')
             }
